@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -55,24 +56,25 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
         Bitmap bitmap = getImage(place.backdrop);
         holder.imageViewBackdropFav.setImageBitmap(bitmap);
 
-//        holder.floatingActionButton.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//
-//            public void onClick(View view) {
-//
-//                final Place place1 = pItem.get(position);
-//
-//                pItem.remove(position);
-//
-//                place1.delete();
-//
-//                PlaceAdapter.this.notifyDataSetChanged();
-//
-//
-//            }
-//
-//        });
+        holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+
+            public void onClick(View view) {
+
+                final Place place1 = pItem.get(position);
+
+                pItem.remove(position);
+
+                place1.delete();
+
+                PlaceAdapter.this.notifyDataSetChanged();
+
+
+            }
+
+        });
+
     }
 
     @Override
@@ -86,20 +88,14 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        //        public TextView textViewJudulFav;
-//        public TextView textViewTerbitFav;
-//        public TextView textViewOverviewFav;
         public ImageView imageViewBackdropFav;
-//        public FloatingActionButton floatingActionButton;
+        public Button buttonDelete;
 
         public ViewHolder(View itemView) {
             super(itemView);
-//
-//            textViewJudulFav = (TextView) itemView .findViewById(R.id.textViewJudulFav);
-//            textViewTerbitFav = (TextView) itemView.findViewById(R.id.textViewTerbitFav);
-//            textViewOverviewFav = (TextView) itemView.findViewById(R.id.textViewOverviewFav);
-            imageViewBackdropFav = (ImageView) itemView.findViewById(R.id.imageViewBackDropFav);
 
+            imageViewBackdropFav = (ImageView) itemView.findViewById(R.id.imageViewBackDropFav);
+            buttonDelete = (Button) itemView.findViewById(R.id.buttonDelete);
         }
     }
 }

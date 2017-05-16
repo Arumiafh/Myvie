@@ -48,13 +48,8 @@ public class FavoriteFragment extends Fragment {
         pList.addAll(Place.listAll(Place.class));
         adapter.notifyDataSetChanged();
 
-
-//        Place book = Place.findById(Place.class, 1);
-//        tvAsu.setText(book.overview);
-
         return view;
     }
-
 
 }
 
