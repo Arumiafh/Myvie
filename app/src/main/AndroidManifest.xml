@@ -34,7 +34,7 @@
         <activity
             android:name=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        andro
+
         <activity
             android:name=".SecondActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
