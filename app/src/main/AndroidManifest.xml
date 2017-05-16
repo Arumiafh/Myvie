@@ -3,7 +3,6 @@
     package="id.sch.smktelkom_mlg.privateassignment.xirpl106.myvie">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <meta-data
         android:name="DATABASE"
         android:value="favorit.db" />

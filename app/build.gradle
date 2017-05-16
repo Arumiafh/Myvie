@@ -13,6 +13,17 @@ android {
         vectorDrawables.useSupportLibrary = true;
 
     }
+
+    signingConfigs {
+        release {
+            storeFile file("../key/key.jks")
+            storePassword "arumiafh"
+            keyAlias "Aliaskey"
+            keyPassword "arumiafh"
+
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
