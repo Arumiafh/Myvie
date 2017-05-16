@@ -60,17 +60,6 @@ public class HomeFragment extends Fragment {
 
         loadRecyclerViewData();
 
-
-//        for(int i = 0; i<=10;i++) {
-//            HomeListItem listItem = new HomeListItem(
-//                    "heading" +(i+1),
-//                    "iki desc"
-//            );
-//            listItems.add(listItem);
-//        }
-//        adapter = new HomeAdapter(listItems, getActivity());
-//
-//        recyclerView.setAdapter(adapter);
         return view;
     }
 

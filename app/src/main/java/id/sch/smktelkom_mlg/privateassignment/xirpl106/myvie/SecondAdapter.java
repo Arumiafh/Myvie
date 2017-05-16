@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -52,7 +51,7 @@ public class SecondAdapter extends RecyclerView.Adapter<SecondAdapter.ViewHolder
 
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Klik " + secondListItem.getJudul(), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, secondListItem.getJudul() + "dipilih", Toast.LENGTH_LONG).show();
                 Intent singleBlogIntent = new Intent(context, SecondActivity.class);
                 singleBlogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 singleBlogIntent.putExtra("blog_id", position);
@@ -68,14 +67,12 @@ public class SecondAdapter extends RecyclerView.Adapter<SecondAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView textViewJudul;
         public ImageView imageViewBack;
         public LinearLayout linearLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-//            textViewJudul = (TextView) itemView.findViewById(R.id.textViewJudul2);
             imageViewBack = (ImageView) itemView.findViewById(R.id.imageViewBack2);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.LinearLayout2);
 

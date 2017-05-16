@@ -1,6 +1,8 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl106.myvie;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +24,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import id.sch.smktelkom_mlg.privateassignment.xirpl106.myvie.Sugar.Place;
+
 public class SecondActivity extends AppCompatActivity {
 
     private static final String URL_DATA = "https://api.themoviedb.org/3/discover/movie?with_genres=18&sort_by=vote_average.desc&vote_count.gte=10&api_key=0652326c89cd19f30e225c34439a580c";
@@ -29,7 +37,21 @@ public class SecondActivity extends AppCompatActivity {
     public TextView textViewTerbit;
     public TextView textViewOverView;
     public ImageView imageViewDetail;
+    public FloatingActionButton floatingActionButton;
+    public String Backdrop;
+    public byte[] gambar = new byte[2048];
+    Place place;
+    boolean isPressed = true;
+    boolean isNew;
+    ArrayList<Place> plItem;
+    JSONObject o = null;
     private Integer mPostkey = null;
+
+    public static byte[] getBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
 
 
     @Override
@@ -61,13 +83,32 @@ public class SecondActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if (isPressed) {
+                    doSave();
+                    Snackbar.make(view, "Berhasil ditambahkan ke Favorite", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                } else {
+                    Snackbar.make(view, "Gagal ditambahkan ke Favorite", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+                isPressed = !isPressed;
             }
         });
     }
 
+    private void doSave() {
+        String overview = textViewOverView.getText().toString();
+        String terbit = textViewTerbit.getText().toString();
+        String judul = textViewJudul.getText().toString();
+        byte[] backdrop = gambar;
+        String favorite = "favorite";
+
+        place = new Place(overview, terbit, judul, backdrop, favorite);
+        place.save();
+    }
+
     private void loadRecyclerViewData() {
+
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading data...");
         progressDialog.show();
@@ -82,25 +123,44 @@ public class SecondActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(s);
                             JSONArray array = jsonObject.getJSONArray("results");
-                            JSONObject o = array.getJSONObject(mPostkey);
+                            o = array.getJSONObject(mPostkey);
 
 
                             setTitle(" ");
 
 
                             textViewJudul.setText(o.getString("title"));
-                            setTitle(o.getString("title"));
                             textViewTerbit.setText(o.getString("release_date"));
                             textViewOverView.setText(o.getString("overview"));
 
-//                            url = o.getJSONObject("link").getString("url");
+//                             url = o.getJSONObject("link").getString("url");
 
                             Glide
 
                                     .with(SecondActivity.this)
-                                    .load("https://image.tmdb.org/t/p/w500" + o.getString("backdrop_path"))
+                                    .load("https://image.tmdb.org/t/p/w500" + o.getString("poster_path"))
                                     .into(imageViewDetail);
+                            new AsyncTask<Void, Void, Void>() {
 
+                                @Override
+                                protected Void doInBackground(Void... params) {
+                                    try {
+                                        Bitmap bitmap = Glide.
+                                                with(getApplicationContext()).
+                                                load("https://image.tmdb.org/t/p/w500" + o.getString("poster_path")).
+                                                asBitmap().
+                                                into(500, 500).get();
+                                        gambar = getBytes(bitmap);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    return null;
+                                }
+                            }.execute();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -115,6 +175,8 @@ public class SecondActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
-    }
-}
 
+    }
+
+
+}

@@ -1,6 +1,8 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl106.myvie;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +24,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import id.sch.smktelkom_mlg.privateassignment.xirpl106.myvie.Sugar.Place;
+
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -30,7 +38,21 @@ public class HomeActivity extends AppCompatActivity {
     public TextView textViewTerbit;
     public TextView textViewOverview;
     public ImageView imageViewDetail;
+    public FloatingActionButton floatingActionButton;
+    public String Backdrop;
+    public byte[] gambar = new byte[2048];
+    Place place;
+    boolean isPressed = true;
+    boolean isNew;
+    ArrayList<Place> plItem;
+    JSONObject o = null;
     private Integer mPostkey = null;
+
+    public static byte[] getBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +69,15 @@ public class HomeActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if (isPressed) {
+                    doSave();
+                    Snackbar.make(view, "Berhasil ditambahkan ke Favorite", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                } else {
+                    Snackbar.make(view, "Gagal ditambahkan ke Favorite", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+                isPressed = !isPressed;
             }
         });
 
@@ -67,6 +96,17 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    private void doSave() {
+        String overview = textViewOverview.getText().toString();
+        String terbit = textViewTerbit.getText().toString();
+        String judul = textViewJudul.getText().toString();
+        byte[] backdrop = gambar;
+        String favorite = "favorite";
+
+        place = new Place(overview, terbit, judul, backdrop, favorite);
+        place.save();
+    }
+
     private void loadRecyclerViewData() {
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -83,7 +123,7 @@ public class HomeActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(s);
                             JSONArray array = jsonObject.getJSONArray("results");
-                            JSONObject o = array.getJSONObject(mPostkey);
+                            o = array.getJSONObject(mPostkey);
 
 
                             setTitle(" ");
@@ -100,7 +140,27 @@ public class HomeActivity extends AppCompatActivity {
                                     .with(HomeActivity.this)
                                     .load("https://image.tmdb.org/t/p/w500" + o.getString("poster_path"))
                                     .into(imageViewDetail);
+                            new AsyncTask<Void, Void, Void>() {
 
+                                @Override
+                                protected Void doInBackground(Void... params) {
+                                    try {
+                                        Bitmap bitmap = Glide.
+                                                with(getApplicationContext()).
+                                                load("https://image.tmdb.org/t/p/w500" + o.getString("poster_path")).
+                                                asBitmap().
+                                                into(500, 500).get();
+                                        gambar = getBytes(bitmap);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    return null;
+                                }
+                            }.execute();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

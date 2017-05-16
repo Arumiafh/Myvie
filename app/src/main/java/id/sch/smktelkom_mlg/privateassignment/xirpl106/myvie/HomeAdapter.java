@@ -41,14 +41,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final HomeListItem homeListItem = homeListItems.get(position);
 
-
-        //holder.imageViewOtof.setImageURI(homeListItem.getImageUrl());
-        //glide ini nnt
-
-//
-//
-//        }
-//        );
         Glide
                 .with(context)
                 .load(homeListItem.getBackdrop())
@@ -81,7 +73,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
-
 
             imageViewBack = (ImageView) itemView.findViewById(R.id.imageViewBack);
             linearLayout = (RelativeLayout) itemView.findViewById(R.id.LinearLayout);
